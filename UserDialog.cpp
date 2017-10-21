@@ -8,9 +8,6 @@ UserDialog::UserDialog(int flag,QString title,QWidget *parent) :
     ui->setupUi(this);
     QWidget::setWindowTitle(title);
 
-
-
-
     if(flag == 1)
     {
          //增加用户

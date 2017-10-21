@@ -13,6 +13,7 @@ DBHelper* DBHelper::getIntance()
 }
 void DBHelper::createConnect()
 {
+     Utils utils;
     db.setDatabaseName("chat.db");
     if(db.open())
     {
@@ -22,20 +23,20 @@ void DBHelper::createConnect()
     {
         qDebug() << "database failed to open";
     }
-    QSqlQuery query(db);
-    QString create_sql = "create table if not exists tb_user (id int primary key ,username text not null, "
-                         "nickname text not null, passwd text not null,phonenumber text not null);";
-    query.prepare(create_sql);
-    bool queryret = query.exec();
-    if(!queryret)
-    {
-        qDebug() << "Error: Fail to create table." << query.lastError();
-    }
-    else
-    {
-        qDebug() << "Table created or  table  exist!";
-    }
-    qDebug()<<"建库建表:"<<queryret;
+   bool c_user = utils.ExecSQL(db,utils.createUserTable());
+   if(c_user)
+   {
+       qDebug()<<"用户表创建成功";
+   }else{
+       qDebug()<<"用户表创建失败";
+   }
+//   bool c_verification = utils.ExecSQL(db,utils.createPhoneVerTable());
+//   if(c_verification)
+//   {
+//       qDebug()<<"验证码表创建成功";
+//   }else{
+//       qDebug()<<"验证码表创建失败";
+//   }
 }
 void DBHelper::destoryConnect()
 {

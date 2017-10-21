@@ -4,7 +4,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-
+#include "Utils.h"
 class DBHelper
 {
 public:
@@ -12,11 +12,13 @@ public:
     void createConnect();
     void destoryConnect();
 
+protected:
 
 private:
     QSqlDatabase db;
     static DBHelper* intance;
     DBHelper();
+
 };
 
 #endif // DBHELPER_H

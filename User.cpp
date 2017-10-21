@@ -5,8 +5,8 @@ User::User()
 
 }
 
-User::User( QString nickname, QString passwd, QString phonenumber, QString username)
-    :nickname(nickname),passwd(passwd),phonenumber(phonenumber),username(username)
+User::User(QString nickname, QString passwd, QString phonenumber, QString username, QString phoneverify, int sendflag)
+    :nickname(nickname),passwd(passwd),phonenumber(phonenumber),username(username),phoneverify(phoneverify),sendflag(sendflag)
 {
 
 }
@@ -61,3 +61,23 @@ void User::setUserName(const QString username)
     this->username = username;
 }
 
+
+void User::setPhoneVerify(const QString phoneverify)
+{
+    this->phoneverify = phoneverify;
+}
+
+QString User::getPhoneVerify()const
+{
+    return phoneverify;
+}
+
+void User::setSendFlag(const int sendflag)
+{
+    this->sendflag = sendflag;
+}
+
+int User::getSendFlag()const
+{
+    return sendflag;
+}

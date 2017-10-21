@@ -8,23 +8,22 @@ UserDaoImp::UserDaoImp()
 
 QString UserDaoImp::insertUser(const User &user)
 {
-    Utils utils;
-    QString username = utils.generateRandomNumber();//注册成功返回用户名
+    QString username = utils.generateRandomNumber(3);//注册成功返回用户名
     DBHelper* helper = DBHelper::getIntance();
     helper->createConnect();
     QSqlQuery query;
-     bool ret =false;
+    bool ret =false;
     if(user.getPhonenumber()!=NULL)
     {
         query.prepare("select * from tb_user where phonenumber=:phonenumber ");
         query.bindValue(":phonenumber",user.getPhonenumber());
         ret = query.exec();
         bool queryflag = (!query.next());
-         qDebug()<<"查询："<<user.getPhonenumber()<<query.next();
+        qDebug()<<"查询："<<user.getPhonenumber()<<query.next();
         if(!queryflag)
         {
             qDebug()<<"queryflag:"<<queryflag;
-           return "1";//1是手机号存在
+            return "1";//1是手机号存在
         }else{
             QString insterSQL = "insert into tb_user (nickname,passwd,phonenumber,username) "
                                 "values (:nickname,:passwd,:phonenumber,:username);";
@@ -203,13 +202,13 @@ vector<User> UserDaoImp::selectUser(const User &user)
     DBHelper* helper = DBHelper::getIntance();
     vector<User> users;
     helper->createConnect();
-    qDebug()<<"141 username:"<<user.getUsername();
-    qDebug()<<"143 passwd:"<<user.getPasswd();
+    qDebug()<<"select username:"<<user.getUsername()<<",select passwd:"<<user.getPasswd()<<",select phonenuber:"<<user.getPhonenumber();
     QSqlQuery query;
     query.prepare("select id,username,nickname,passwd,phonenumber from tb_user "
-                  "where username=:username and passwd=:passwd;");
+                  "where username=:username and passwd=:passwd or (phonenumber=:phonenumber and username=:username);");
     query.bindValue(":username",user.getUsername());
     query.bindValue(":passwd",user.getPasswd());
+    query.bindValue(":phonenumber",user.getPhonenumber());
     bool ret= query.exec();
     if(ret)
     {
@@ -306,4 +305,78 @@ bool UserDaoImp::updateUserInfo(const User &user)
     qDebug()<<"update result:"<<reslut;
     helper->destoryConnect();
     return reslut;
+}
+//增加验证码
+bool UserDaoImp::insertVerifi(const User &ver)
+{
+    DBHelper* helper = DBHelper::getIntance();
+    helper->createConnect();
+    QSqlQuery query;
+    bool ret =false;
+    if(!ver.getPhonenumber().isEmpty()&&!ver.getUsername().isEmpty())
+    {
+        query.prepare("select * from tb_user where phonenumber=:phonenumber and username=:username;");
+        query.bindValue(":phonenumber",ver.getPhonenumber());
+        query.bindValue(":username",ver.getUsername());
+        ret = query.exec();
+        bool queryflag = (!query.next());
+        qDebug()<<"查询："<<ver.getPhonenumber()<<ver.getUsername()<<",ret:"<<ret<<query.next();
+        if(queryflag)
+        {
+            qDebug()<<"查询：不存在此用户"<<!queryflag;
+
+            return false;//不存在此用户
+        }else{
+            int addcolumnver = utils.IsValid(query,"tb_user","phoneverfiy");
+            int addcolumnflag = utils.IsValid(query,"tb_user","sendflag");
+
+            if(addcolumnver==-1)//-1 是字段不存在
+            {
+                query.exec("ALTER TABLE tb_user ADD phoneverfiy text;");
+                qDebug()<<"增加字段验证码：成功";
+                addcolumnver =0 ;
+            }else
+            {
+                 qDebug()<<"增加字段验证码：失败";
+            }
+            if(addcolumnflag==-1)//-1 是字段不存在
+            {
+                query.exec("ALTER TABLE tb_user ADD sendflag integer;");
+                qDebug()<<"增加字段验证码次数：成功";
+                addcolumnflag =0 ;
+            }else
+            {
+                 qDebug()<<"增加字段验证码：失败";
+            }
+            if(addcolumnflag!=-1&&addcolumnver!=-1){
+                QString insterverSQL = "update tb_user set phoneverfiy=:phoneverfiy,sendflag=:sendflag where phonenumber=:phonenumber and username=:username;";
+                query.prepare(insterverSQL);
+
+                query.bindValue(":phoneverfiy",ver.getPhoneVerify());
+                query.bindValue(":phonenumber",ver.getPhonenumber());
+                query.bindValue(":username",ver.getUsername());
+                query.bindValue(":sendflag",ver.getSendFlag());
+                QString SQLstr = "update tb_user set phoneverify="+ver.getPhoneVerify()+",sendflag="+QString::number(ver.getSendFlag())+
+                        " where phonenumber="+ver.getPhonenumber()+" and username="+ver.getUsername()+";";
+                qDebug()<<SQLstr;
+                ret = query.exec();
+                if(ret==false)
+                {
+                    const QSqlError& error = query.lastError();
+                    qDebug()<<"UserDaoImp insert verify:"<<error.text();
+                }
+            }else
+            {
+                ret = false;
+                qDebug()<<"增加验证码字段失败";
+            }
+        }
+    }
+    helper->destoryConnect();
+    return ret;
+}
+//修改验证码
+bool UserDaoImp::updateVerifi(const User &ver)
+{
+
 }

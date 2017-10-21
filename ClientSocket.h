@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include "packet.h"
 #include "UserDaoImp.h"
+#include "Utils.h"
 class ClientSocket : public QObject
 {
     Q_OBJECT
@@ -13,9 +14,11 @@ public:
     void regUser(Packet* data);//注册
     void loginUser(Packet* data);//登录
     void selectAllUser(Packet* data);//查询全部
+    void sendVerification(Packet* data);//修改密码发送手机验证码
 
 private:
     QTcpSocket* socket;
+    Utils utils;
 
 signals:
     //单对单

@@ -8,11 +8,11 @@ Utils::Utils()
 
 }
 //生成账号 循环几次
-QString Utils::generateRandomNumber()
+QString Utils::generateRandomNumber(int n)
 {
     QString str = "";
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    for(int i=0; i<3; i++)
+    for(int i=0; i<n; i++)
     {
         int test =qrand()%10;
         //qDebug()<<test;
@@ -61,3 +61,47 @@ int Utils::IsValid( QSqlQuery query,const QString& tableName, const QString& fie
     }
 
 }
+//创建用户表格
+QString Utils::createUserTable()
+{
+    QString create_sql = "create table if not exists tb_user (id int primary key ,username text not null, "
+                         "nickname text not null, passwd text not null,phonenumber text not null);";
+    return create_sql;
+}
+//创建验证码表格
+QString Utils::createPhoneVerTable()
+{
+    QString create_sql = "create table if not exists tb_verify (id int primary key ,username text not null, "
+                         "phonenumber text not null,poneverify text not null,sendflag integer default(0));";
+
+    return create_sql;
+}
+//执行结果
+bool Utils::ExecSQL(QSqlDatabase db, QString createSQL)
+{
+    QSqlQuery query(db);
+    query.prepare(createSQL);
+    bool queryret = query.exec();
+    if(!queryret)
+    {
+        qDebug() << "Error: 创建表失败." << query.lastError();
+    }
+    else
+    {
+        qDebug() << "创建表或表存在；";
+    }
+    qDebug()<<"建表:"<<queryret;
+    return queryret;
+}
+////生成验证码
+//QString Utils::getVerification()
+//{
+//    QString ret = "";
+//    for(int i = 0; i < 4; i++)
+//    {
+//        int c = (qrand() % 2) ? '0' : '9';
+//        ret += static_cast<QChar>(c + qrand() % 8);
+//    }
+//    qDebug()<<"手机验证码："<<ret;
+//    return ret;
+//}

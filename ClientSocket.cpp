@@ -31,6 +31,9 @@ void ClientSocket::onReadyRead()
     case TYPE_SELALL:
         selectAllUser(&data);
         break;
+    case TYPE_SEND_VER:
+        sendVerification(&data);
+        break;
     default:
         break;
     }
@@ -67,7 +70,6 @@ void ClientSocket::regUser(Packet *data)
 
 void ClientSocket::loginUser(Packet *data)
 {
-    qDebug()<<"59:"<<data->username;
     QString username(data->username);
     QString passwd(data->passwd);
     User user("",passwd,"",username);
@@ -153,6 +155,36 @@ void ClientSocket::selectAllUser(Packet *data)
         QString errmsg = "查询失败";
         strcpy(data->msg,errmsg.toStdString().data()) ;
 
+    }
+    emit signalReturnInfo(socket,data,sizeof(Packet));
+}
+// 发送手机验证码
+void ClientSocket::sendVerification(Packet *data)
+{
+    QString verification = utils.generateRandomNumber(4);
+    if(verification.size()==4)
+    {
+        QString phonenumber(data->phonenumber);
+        QString username(data->username);
+//User(QString nickname,QString passwd="1",QString phonenumber=0,QString username="",QString phoneverify="",int flag=0);
+        User user("","",phonenumber,username,verification,0);
+        UserDao* ud = new UserDaoImp();
+        bool insertverify = ud->insertVerifi(user);//根据插入返回值 及用户名
+        if(insertverify){
+            data->type =  TYPE_SEND_VERSUCSS;
+            strcpy(data->msg,verification.toStdString().data());
+        }else
+        {
+            verification= "此手机号没有注册用户";
+            strcpy(data->msg,verification.toStdString().data());
+            data->type = TYPE_SEND_VERERROR;
+        }
+
+    }else
+    {
+        verification = "手机验证码错误";
+        data->type =  TYPE_SEND_VERERROR;
+        strcpy(data->msg,verification.toStdString().data());
     }
     emit signalReturnInfo(socket,data,sizeof(Packet));
 }

@@ -37,28 +37,28 @@ void UserList::on_btn_all_clicked()
 void UserList::on_btn_add_clicked()
 {
     userdialog =  new UserDialog(1,"增加用户");
-     connect(userdialog,SIGNAL(signalinsert(User)),this,SLOT(onSignalinsert(User)));
+    connect(userdialog,SIGNAL(signalinsert(User)),this,SLOT(onSignalinsert(User)));
     userdialog->show();
 }
 //修改用户
 void UserList::on_btn_update_clicked()
 {
     userdialog =  new UserDialog(2,"更新用户");
-     connect(userdialog,SIGNAL(signalupdata(User)),this,SLOT(onSignalupdata(User)));
+    connect(userdialog,SIGNAL(signalupdata(User)),this,SLOT(onSignalupdata(User)));
     userdialog->show();
 }
 //删除用户
 void UserList::on_btn_del_clicked()
 {
     userdialog =  new UserDialog(3,"删除用户");
-     connect(userdialog,SIGNAL(signaldel(User)),this,SLOT(onSignaldel(User)));
+    connect(userdialog,SIGNAL(signaldel(User)),this,SLOT(onSignaldel(User)));
     userdialog->show();
 }
 //查询用户
 void UserList::on_btn_search_clicked()
 {
     userdialog =  new UserDialog(4,"查询用户");
-     connect(userdialog,SIGNAL(signalselect(User)),this,SLOT(onSignalselect(User)));
+    connect(userdialog,SIGNAL(signalselect(User)),this,SLOT(onSignalselect(User)));
     userdialog->show();
 }
 
@@ -70,7 +70,7 @@ void UserList::onSignalinsert(User user)
     qDebug()<<"flagname:"<<flagname;
     if(!flagname.isEmpty()&&flagname!="1")
     {
-       result="增加用户成功";
+        result="增加用户成功";
     }else if(flagname=="1")
     {
         result = "用户手机号已存在";
@@ -90,7 +90,7 @@ void UserList::onSignaldel(User user)
     QString result = "";
     if(delflag)
     {
-       result="删除用户成功";
+        result="删除用户成功";
     }else
     {
         result="删除用户失败";
@@ -102,15 +102,14 @@ void UserList::onSignaldel(User user)
 void UserList::onSignalupdata(User user)
 {
     UserDao* ud = new UserDaoImp();
-    bool uodateflag = ud->updateUser(user);
-    QString result = "";
-    if(uodateflag)
-    {
-       result="更新用户成功";
-    }else
-    {
-        result="更新用户失败";
-    }
+    QString result = ud->updateUser(user);
+//    if(result)
+//    {
+//        result="更新用户成功";
+//    }else
+//    {
+//        result="更新用户失败";
+//    }
     QMessageBox::information(this,"服务端更新",result);
     showMsg();
 }
@@ -128,16 +127,40 @@ void UserList::onSignalselect(User user)
 
         QString nickname = it->getNickname() ;
         QString phonenumber=it->getPhonenumber();
-         QString passwd=it->getPasswd();
-         QString username=it->getUsername();
-         QString ret="nickname=";
-         ret += nickname;
-         ret += "----phonenumber=";
-         ret += phonenumber;
-         ret += "----passwd=";
-         ret += passwd;
-         ret += "----username=";
-         ret += username;
+        QString passwd=it->getPasswd();
+        QString username=it->getUsername();
+        QString ret="nickname=";
+        ret += nickname;
+        ret += "----phonenumber=";
+        ret += phonenumber;
+        ret += "----passwd=";
+        ret += passwd;
+        ret += "----username=";
+        ret += username;
         ui->te_show->append(ret);
     }
 }
+
+void UserList::onSignalupdatever(User user)
+{
+    UserDao* ud = new UserDaoImp();
+    bool uodateflag = ud->updateVerifi(user);
+    QString result = "";
+    if(uodateflag)
+    {
+        result="修改验证码成功";
+    }else
+    {
+        result="修改验证码失败";
+    }
+    QMessageBox::information(this,"服务端更新",result);
+    showMsg();
+}
+//修改验证码
+void UserList::on_btn_verify_clicked()
+{
+    userdialog =  new UserDialog(5,"修改验证码");
+    connect(userdialog,SIGNAL(signalupdatever(User)),this,SLOT(onSignalupdatever(User)));
+    userdialog->show();
+}
+

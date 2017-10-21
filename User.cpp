@@ -81,3 +81,9 @@ int User::getSendFlag()const
 {
     return sendflag;
 }
+//重载输出
+void User::printlf()const
+{
+    qDebug()<<"User重载id:"<< id<<",nickname："<<nickname<<",username:"
+         <<username<<",passwd:"<<passwd<<",phonenumber:"<<phonenumber<<",verfiy:"<<phoneverify<<",sendflag:"<<sendflag;
+}

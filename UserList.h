@@ -36,6 +36,8 @@ private slots:
     void onSignaldel(User);
     void onSignalupdata(User);
     void onSignalselect(User);
+    void onSignalupdatever(User);
+    void on_btn_verify_clicked();
 
 private:
     Ui::UserList *ui;

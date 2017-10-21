@@ -2,6 +2,7 @@
 #define USER_H
 
 #include <QString>
+#include <QDebug>
 class User
 {
 public:
@@ -22,6 +23,7 @@ public:
     QString getPhoneVerify()const;
     void setSendFlag(const int sendflag);
     int getSendFlag()const;
+    void printlf()const;
 private:
     int id ;
     QString username ;

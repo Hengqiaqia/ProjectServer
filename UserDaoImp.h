@@ -9,12 +9,14 @@ public:
     QString insertUser(const User& user) ;
     vector<User> selectAllUser() ;
     bool deleteSUser(const User& user) ;
-    bool updateUser(const User& user) ;
+    QString updateUser(const User& user) ;
     vector< User > selectUser(const User& user) ;//查询单个
     bool updateUserInfo(const User &user);
 
     bool insertVerifi(const User& ver);//增加验证码
     bool updateVerifi(const User& ver);//修改验证码
+    bool execverify(const User& ver);//执行验证码语句
+
 private:
      Utils utils;
 

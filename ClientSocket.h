@@ -15,7 +15,7 @@ public:
     void loginUser(Packet* data);//登录
     void selectAllUser(Packet* data);//查询全部
     void sendVerification(Packet* data);//修改密码发送手机验证码
-
+    void updateUser(Packet* data);//更新用户信息
 private:
     QTcpSocket* socket;
     Utils utils;

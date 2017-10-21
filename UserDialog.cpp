@@ -10,7 +10,7 @@ UserDialog::UserDialog(int flag,QString title,QWidget *parent) :
 
     if(flag == 1)
     {
-         //增加用户
+        //增加用户
         ui->le_username->setPlaceholderText("账号系统自动生成");
         ui->le_username->setEnabled(false);
         ui->le_username->setFocusPolicy(Qt::NoFocus);//失去焦点
@@ -31,10 +31,12 @@ UserDialog::UserDialog(int flag,QString title,QWidget *parent) :
 
         ui->le_phonenumber->setMaxLength(11);
         ui->le_nickname->setPlaceholderText("请输入昵称");
+        ui->label_verify->hide();
+        ui->le_phoneverifiy->hide();
     }
     else if(flag == 2)
     {
-       //更新用户
+        //更新用户
         ui->le_username->setPlaceholderText("请输入账号");
         ui->le_passwd->setPlaceholderText("请输入密码");
         ui->le_passwd->setEchoMode(QLineEdit::Password);
@@ -44,6 +46,8 @@ UserDialog::UserDialog(int flag,QString title,QWidget *parent) :
         ui->le_phonenumber->setValidator( validator );
         ui->le_phonenumber->setMaxLength(11);
         ui->le_nickname->setPlaceholderText("请输入昵称");
+        ui->label_verify->hide();
+        ui->le_phoneverifiy->hide();
     }
     else if(flag == 3)
     {
@@ -57,19 +61,43 @@ UserDialog::UserDialog(int flag,QString title,QWidget *parent) :
         ui->le_phonenumber->setValidator( validator );
         ui->le_phonenumber->setMaxLength(11);
         ui->le_nickname->setPlaceholderText("请输入昵称");
+        ui->label_verify->hide();
+        ui->label_passwd->hide();
+        ui->le_passwd->hide();
+
+        ui->le_phoneverifiy->hide();
     }
     else if(flag == 4)
     {
         // 查询用户
         ui->le_username->setPlaceholderText("请输入账号");
-        ui->le_passwd->setPlaceholderText("请输入密码");
-        ui->le_passwd->setEchoMode(QLineEdit::Password);
         ui->le_phonenumber->setPlaceholderText("请输入手机号码");
         QRegExp regx("[0-9]+$");
         QValidator *validator = new QRegExpValidator(regx,  ui->le_phonenumber );
         ui->le_phonenumber->setValidator( validator );
         ui->le_phonenumber->setMaxLength(11);
         ui->le_nickname->setPlaceholderText("请输入昵称");
+        ui->label_verify->hide();
+        ui->label_passwd->hide();
+        ui->le_passwd->hide();
+        ui->label_nickname->hide();
+        ui->le_nickname->hide();
+        ui->le_phoneverifiy->hide();
+    }
+    else if(flag == 5)
+    {
+        // 修改验证码
+        ui->le_username->setPlaceholderText("请输入账号");
+        ui->le_phonenumber->setPlaceholderText("请输入手机号码");
+        QRegExp regx("[0-9]+$");
+        ui->label_passwd->hide();
+        ui->le_passwd->hide();
+        ui->label_nickname->hide();
+        ui->le_nickname->hide();
+        QValidator *validator = new QRegExpValidator(regx,  ui->le_phonenumber );
+        ui->le_phonenumber->setValidator( validator );
+        ui->le_phonenumber->setMaxLength(11);
+        ui->le_phoneverifiy->setPlaceholderText("请输入验证码");
     }
 }
 
@@ -89,24 +117,44 @@ void UserDialog::on_btn_ok_clicked()
     QString passwd = ui->le_passwd->text();
     QString phonenumber = ui->le_phonenumber->text();
     QString nickname = ui->le_nickname->text();
-    User user( nickname, passwd, phonenumber, username);
+    QString verify=ui->le_phoneverifiy->text();
+    User user( nickname, passwd, phonenumber, username,verify,0);
     if(flag == 1)
     {
-        emit signalinsert(user);
-
+        if(!phonenumber.isEmpty()&&!nickname.isEmpty()){
+            emit signalinsert(user);
+        }else{
+            QMessageBox::critical(this,"增加用户","请输入昵称，手机号");
+        }
     }
     else if(flag == 2)
     {
-        emit signalupdata(user);
-
+        if(!username.isEmpty()&&!phonenumber.isEmpty()){
+            emit signalupdata(user);
+        }else{
+            QMessageBox::critical(this,"修改用户","请输入账号，手机号");
+        }
     }
     else if(flag == 3)
     {
-        emit signaldel(user);
+        if(!username.isEmpty()&&!phonenumber.isEmpty()){
+            emit signaldel(user);
+        }else{
+            QMessageBox::critical(this,"删除用户","请输入账号，手机号");
+        }
+
     }
     else if(flag == 4)
     {
         emit signalselect(user);
+    }
+    else if(flag == 5)
+    {
+        if(!verify.isEmpty()&&!username.isEmpty()&&!phonenumber.isEmpty()){
+            emit signalupdatever(user);
+        }else{
+            QMessageBox::critical(this,"修改验证码","请输入账号，手机号，验证码");
+        }
     }
     this->close();
 }

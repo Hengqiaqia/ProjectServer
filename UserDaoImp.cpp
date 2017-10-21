@@ -136,23 +136,38 @@ bool UserDaoImp::deleteSUser(const User &user)
     return reslut;
 }
 
-bool UserDaoImp::updateUser(const User &user)
+QString UserDaoImp::updateUser(const User &user)
 {
     DBHelper* helper = DBHelper::getIntance();
     helper->createConnect();
     QSqlQuery query;
     QString sql=NULL;
+    QString msg = "";
     bool ret = false,execret = false,reslut = false;
+    user.printlf();
     if(user.getUsername()!=NULL)
     {
         sql = "select id,username,nickname,passwd,phonenumber from tb_user where username=:username ";
         query.prepare(sql);
         query.bindValue(":username",user.getUsername());
         ret = query.exec();
-        if(!ret)
+        if(!query.next())
         {
-            return false;
+            msg = "没有此用户";
+            return msg;
         }else{
+            if(!user.getPasswd().isEmpty()&&!user.getUsername().isEmpty()&&!user.getPhonenumber().isEmpty()&&!user.getNickname().isEmpty())
+            {
+
+                sql = "update tb_user set nickname=:nickname,passwd=:passwd,phonenumber=:phonenumber where username=:username;";
+                query.prepare(sql);
+                query.bindValue(":username",user.getUsername());
+                query.bindValue(":nickname",user.getNickname());
+                query.bindValue(":phonenumber",user.getPhonenumber());
+                query.bindValue(":passwd",user.getPasswd());
+                execret = true;
+                qDebug()<<"update result:nickname，passwd,phonenumber" ;
+            }else
             if(!user.getUsername().isEmpty()&&!user.getPhonenumber().isEmpty()&&!user.getNickname().isEmpty())
             {
 
@@ -162,7 +177,7 @@ bool UserDaoImp::updateUser(const User &user)
                 query.bindValue(":nickname",user.getNickname());
                 query.bindValue(":phonenumber",user.getPhonenumber());
                 execret = true;
-
+                qDebug()<<"update result:nickname，phonenumber" ;
             }
             else if(!user.getUsername().isEmpty()&&!user.getNickname().isEmpty())
             {
@@ -172,7 +187,17 @@ bool UserDaoImp::updateUser(const User &user)
                 query.bindValue(":username",user.getUsername());
                 query.bindValue(":nickname",user.getNickname());
                 execret = true;
-
+                qDebug()<<"update result:nickname" ;
+            }
+            else if(!user.getUsername().isEmpty()&&!user.getPhonenumber().isEmpty()&&!user.getPasswd().isEmpty())
+            {
+                sql = "update tb_user set passwd =:passwd where username=:username and phonenumber=:phonenumber;";
+                query.prepare(sql);
+                query.bindValue(":passwd",user.getPasswd());
+                query.bindValue(":username",user.getUsername());
+                query.bindValue(":phonenumber",user.getPhonenumber());
+                qDebug()<<"update result:passwd" ;
+                execret = true;
             } else if(!user.getUsername().isEmpty()&&!user.getPhonenumber().isEmpty())
             {
                 sql = "update tb_user set phonenumber=:phonenumber where username=:username;";
@@ -180,6 +205,7 @@ bool UserDaoImp::updateUser(const User &user)
                 query.bindValue(":username",user.getUsername());
                 query.bindValue(":phonenumber",user.getPhonenumber());
                 execret = true;
+                qDebug()<<"update result:phonenumber" ;
             }
         }
 
@@ -192,8 +218,15 @@ bool UserDaoImp::updateUser(const User &user)
     }
     reslut = ret && execret;
     qDebug()<<"update result:"<<reslut;
+    if(reslut)
+    {
+        msg = "更新成功";
+    }else
+    {
+        msg="更新失败";
+    }
     helper->destoryConnect();
-    return reslut;
+    return msg;
 }
 
 #if 1
@@ -309,6 +342,16 @@ bool UserDaoImp::updateUserInfo(const User &user)
 //增加验证码
 bool UserDaoImp::insertVerifi(const User &ver)
 {
+    return  execverify(ver);
+}
+//修改验证码
+bool UserDaoImp::updateVerifi(const User &ver)
+{
+    return execverify(ver);
+}
+//执行 验证码 增加修改
+bool UserDaoImp::execverify(const User &ver)
+{
     DBHelper* helper = DBHelper::getIntance();
     helper->createConnect();
     QSqlQuery query;
@@ -337,7 +380,7 @@ bool UserDaoImp::insertVerifi(const User &ver)
                 addcolumnver =0 ;
             }else
             {
-                 qDebug()<<"增加字段验证码：失败";
+                qDebug()<<"增加字段验证码：失败";
             }
             if(addcolumnflag==-1)//-1 是字段不存在
             {
@@ -346,7 +389,7 @@ bool UserDaoImp::insertVerifi(const User &ver)
                 addcolumnflag =0 ;
             }else
             {
-                 qDebug()<<"增加字段验证码：失败";
+                qDebug()<<"增加字段验证码：失败";
             }
             if(addcolumnflag!=-1&&addcolumnver!=-1){
                 QString insterverSQL = "update tb_user set phoneverfiy=:phoneverfiy,sendflag=:sendflag where phonenumber=:phonenumber and username=:username;";
@@ -375,8 +418,4 @@ bool UserDaoImp::insertVerifi(const User &ver)
     helper->destoryConnect();
     return ret;
 }
-//修改验证码
-bool UserDaoImp::updateVerifi(const User &ver)
-{
 
-}

@@ -34,6 +34,9 @@ void ClientSocket::onReadyRead()
     case TYPE_SEND_VER:
         sendVerification(&data);
         break;
+    case TYPE_UPDATE:
+        updateUser(&data);
+        break;
     default:
         break;
     }
@@ -186,5 +189,26 @@ void ClientSocket::sendVerification(Packet *data)
         data->type =  TYPE_SEND_VERERROR;
         strcpy(data->msg,verification.toStdString().data());
     }
+    emit signalReturnInfo(socket,data,sizeof(Packet));
+}
+
+void ClientSocket::updateUser(Packet *data)
+{
+    QString nickname(data->nickname);
+    QString passwd(data->passwd);
+    QString phonenumber(data->phonenumber);
+    QString username(data->username);
+    User user(nickname,passwd,phonenumber,username);
+    UserDao* ud = new UserDaoImp();
+   QString updateflag = ud->updateUser(user);//根据插入返回值 及用户名
+    if(updateflag.contains("成功"))
+    {
+        data->type = TYPE_UPDATE_SUCCESS;
+    }else
+    {
+        data->type = TYPE_UPDATE_ERROR;
+
+    }
+     strcpy(data->msg , updateflag.toStdString().data());
     emit signalReturnInfo(socket,data,sizeof(Packet));
 }

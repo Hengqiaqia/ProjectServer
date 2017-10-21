@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "User.h"
+#include <QMessageBox>
 namespace Ui {
 class UserDialog;
 }
@@ -19,6 +20,7 @@ signals:
     void signaldel(User);
     void signalupdata(User);
     void signalselect(User);
+    void signalupdatever(User);
 private slots:
     void on_btn_cancel_clicked();
 

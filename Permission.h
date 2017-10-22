@@ -1,0 +1,7 @@
+#ifndef PERMISSION_H
+#define PERMISSION_H
+
+
+enum PERMISSION{NORMAL,ADMIN};
+
+#endif // PERMISSION_H

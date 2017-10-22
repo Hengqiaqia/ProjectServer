@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/new/prefix1">
         <file>userdialog.jpg</file>
+        <file>greenStone.png</file>
+        <file>kill.png</file>
+        <file>redStone.png</file>
+        <file>start.png</file>
+        <file>stop.png</file>
     </qresource>
 </RCC>

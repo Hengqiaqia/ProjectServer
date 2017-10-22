@@ -36,7 +36,17 @@ SOURCES += \
     UserDaoImp.cpp \
     Utils.cpp \
     UserList.cpp \
-    UserDialog.cpp
+    UserDialog.cpp \
+    ServerSocket.cpp \
+    CameraServer.cpp \
+    cameraThread.cpp \
+    cameraV4L2.cpp \
+    ServerMainWindow.cpp \
+    ServerSocketObject.cpp \
+    TableWidget.cpp \
+    ShowLog.cpp \
+    TableWidgetDEV.cpp \
+    TableWidgetItem.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -49,13 +59,29 @@ HEADERS += \
     Utils.h \
     packet.h \
     UserList.h \
-    UserDialog.h
+    UserDialog.h \
+    CommandType.h \
+    LogInfo.h \
+    Permission.h \
+    ServerSocket.h \
+    YUYVtoRGB.h \
+    CameraServer.h \
+    cameraThread.h \
+    cameraV4L2.h \
+    ServerMainWindow.h \
+    ServerSocketObject.h \
+    TableWidget.h \
+    ShowLog.h \
+    TableWidgetDEV.h \
+    TableWidgetItem.h
 
 
 FORMS += \
         MainWindow.ui \
     UserList.ui \
-    UserDialog.ui
+    UserDialog.ui \
+    ServerMainWindow.ui \
+    ShowLog.ui
 
 RESOURCES += \
     res.qrc

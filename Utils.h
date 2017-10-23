@@ -19,6 +19,7 @@ public:
     QString createUserTable();//创建用户表 语句
     QString createPhoneVerTable();//创建手机验证码表  语句
     bool ExecSQL(QSqlDatabase db,QString createSQL);//执行创建语句
+    QString createOnLineUserTable();//创建在线用户表语句
 
 };
 

@@ -418,4 +418,30 @@ bool UserDaoImp::execverify(const User &ver)
     helper->destoryConnect();
     return ret;
 }
-
+//第二种方式查找用户
+user_t UserDaoImp::findUser(const QString& name)
+{
+    user_t user;
+    DBHelper *helper = DBHelper::getIntance();
+    helper->createConnect();
+    QSqlQuery query;
+    query.prepare("select username, passwd from tb_user where username=:username;");
+    query.bindValue(":username",name);
+    query.exec();
+    while(query.next()){
+        QString username = query.value(0).toString();
+        QString userpasswd = query.value(1).toString();
+        if(name == username){
+            char* pname = username.toLocal8Bit().data();
+            char* ppasswd = userpasswd.toLocal8Bit().data();
+            strncpy(user.username, pname, 20);
+            strncpy(user.userpasswd, ppasswd, 20);
+            helper->destoryConnect();
+            return user;
+        }
+    }
+    helper->destoryConnect();
+    qDebug()<<"user.uusername:"<<user.username<<"user.passwd:"<<user.userpasswd;
+     strcpy(user.username, "");
+    return user;
+}

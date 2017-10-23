@@ -30,6 +30,14 @@ void DBHelper::createConnect()
    }else{
        qDebug()<<"用户表创建失败";
    }
+   bool c_onlineuser = utils.ExecSQL(db,//"drop table tb_onlineuser");
+                                     utils.createOnLineUserTable());
+   if(c_onlineuser)
+   {
+       qDebug()<<"在线用户表创建成功";
+   }else{
+       qDebug()<<"在线用户表创建失败";
+   }
 //   bool c_verification = utils.ExecSQL(db,utils.createPhoneVerTable());
 //   if(c_verification)
 //   {

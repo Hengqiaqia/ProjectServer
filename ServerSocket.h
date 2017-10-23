@@ -5,7 +5,6 @@
 #include "Permission.h"
 
 #include "CommandType.h"
-
 class ServerSocket : public QTcpSocket
 {
     Q_OBJECT

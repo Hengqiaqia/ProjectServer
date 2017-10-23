@@ -17,6 +17,9 @@ public:
     bool updateVerifi(const User& ver);//修改验证码
     bool execverify(const User& ver);//执行验证码语句
 
+//第二种方式查找用户
+    user_t findUser(const QString& name);
+
 private:
      Utils utils;
 

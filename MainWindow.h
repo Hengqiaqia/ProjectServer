@@ -5,6 +5,7 @@
 #include <QTcpServer>
 #include "packet.h"
 #include "UserList.h"
+#include "userpacket.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,7 +29,8 @@ private slots:
     void onSignalReturnInfo(QTcpSocket*,Packet*,int);
 
     void on_btn_usermanger_clicked();
-
+//第二种方式 的槽函数 返回给客户端
+    void onSigWrite(QTcpSocket *socket, user_t user, int len);
 private:
     Ui::MainWindow *ui;
     QTcpServer *server;

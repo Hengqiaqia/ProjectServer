@@ -1,7 +1,7 @@
 #ifndef USERDAO_H
 #define USERDAO_H
 #include "User.h"
-
+#include "userpacket.h"
 #include <vector>
 using namespace std;
 class UserDao
@@ -16,6 +16,9 @@ public:
 
     virtual bool insertVerifi(const User& ver)=0;//增加验证码
     virtual bool updateVerifi(const User& ver)=0;//修改验证码
+
+    //第二种方式查找用户
+    virtual user_t findUser(const QString& name) = 0;
 
     UserDao();
     virtual ~UserDao();

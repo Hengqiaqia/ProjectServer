@@ -38,15 +38,10 @@ SOURCES += \
     UserList.cpp \
     UserDialog.cpp \
     ServerSocket.cpp \
-    CameraServer.cpp \
-    cameraThread.cpp \
-    cameraV4L2.cpp \
-    ServerMainWindow.cpp \
-    ServerSocketObject.cpp \
-    TableWidget.cpp \
-    ShowLog.cpp \
-    TableWidgetDEV.cpp \
-    TableWidgetItem.cpp
+    ChatRoom.cpp \
+    ChatManager.cpp \
+    OnlineDao.cpp \
+    OnlineDaoImp.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -64,24 +59,19 @@ HEADERS += \
     LogInfo.h \
     Permission.h \
     ServerSocket.h \
-    YUYVtoRGB.h \
-    CameraServer.h \
-    cameraThread.h \
-    cameraV4L2.h \
-    ServerMainWindow.h \
-    ServerSocketObject.h \
-    TableWidget.h \
-    ShowLog.h \
-    TableWidgetDEV.h \
-    TableWidgetItem.h
+    ChatRoom.h \
+    ChatManager.h \
+    userpacket.h \
+    OnlineDao.h \
+    OnlineDaoImp.h
 
 
 FORMS += \
         MainWindow.ui \
     UserList.ui \
     UserDialog.ui \
-    ServerMainWindow.ui \
-    ShowLog.ui
+    ShowLog.ui \
+    servermainwindow.ui
 
 RESOURCES += \
     res.qrc

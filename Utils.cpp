@@ -68,6 +68,12 @@ QString Utils::createUserTable()
                          "nickname text not null, passwd text not null,phonenumber text not null);";
     return create_sql;
 }
+QString Utils::createOnLineUserTable()
+{
+    QString create_sql = "create table if not exists tb_onlineuser (id int primary key ,username text not null, "
+                         "nickname text, passwd text,phonenumber text);";
+    return create_sql;
+}
 //创建验证码表格
 QString Utils::createPhoneVerTable()
 {

@@ -25,6 +25,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+
     qDebug()<<"点击了关闭x按钮";
 }
 
@@ -59,9 +60,13 @@ void MainWindow::onNewConnection()
     QString info ="IP:"+ ip.toString()+"端口："+QString::number(port);
     qDebug()<<"server69line 连接："<<info;
     ui->te_show->append(info);
-    sm->addSocket(client);
+   // sm->addSocket(client)
+
     //cs 专门管理单个客户端的类
     ClientSocket* cs = new ClientSocket(client);
+
+    sm->insertSocket (cs);
+
     // 创建线程专门处理某个客户端
     QThread *thread = new QThread(this);
 
@@ -76,7 +81,9 @@ void MainWindow::onNewConnection()
 
     QObject::connect(client,SIGNAL(disconnected()),
                      this,SLOT(onClienQuit()));
-
+    qRegisterMetaType<user_t>("user_t");    //完成结构体注册
+    connect(cs, SIGNAL(sigWrite(QTcpSocket*,user_t,int)),
+                     this, SLOT(onSigWrite(QTcpSocket*,user_t,int)));
     cs->moveToThread(thread);
     thread->start();
 
@@ -87,13 +94,17 @@ void MainWindow::onClienQuit()
 {
     qDebug()<<"client quit";
 }
-
+//登录 注册 第一种方式
 void MainWindow::onSignalReturnInfo(QTcpSocket *client, Packet *data, int size)
 {
     qDebug()<<"data.username:"<<data->username;
     client->write((char*)data,size);
 }
-
+//第二种方式
+void MainWindow::onSigWrite(QTcpSocket *socket, user_t user, int len)
+{
+    socket->write((char *)&user, len);
+}
 
 
 void MainWindow::on_btn_usermanger_clicked()
